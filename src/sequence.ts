@@ -29,12 +29,12 @@
  * I believe this is related to
  * [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
  *
- * @param base Must be even and > 2. (For a binary sequence with the above
+ * @param base Must be even and >= 4. (For a binary sequence with the above
  * properties, binary encode the base 4 sequence.)
  */
 export function lexSequence(base: number) {
-  if (!Number.isSafeInteger(base) || base % 2 !== 0 || base <= 2) {
-    throw new Error(`lex-sequence base must be an even integer > 2: ${base}`);
+  if (!Number.isSafeInteger(base) || base % 2 !== 0 || base < 4) {
+    throw new Error(`lex-sequence base must be an even integer >= 4: ${base}`);
   }
 
   const logBase = Math.log(base);
