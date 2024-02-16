@@ -1,6 +1,3 @@
-// TODO: Is this tree-shakeable, if you decided to use only a few functions?
-// TODO: optional digit-length hints?
-
 /**
  * These functions deal with a special sequence that has
  * the following properties:
@@ -13,9 +10,8 @@
  *
  * Properties (2) and (3) are analogous to normal counting, except
  * that we order by the lexicographic order instead of the
- * usual order by magnitude. It is also the case that
- * the numbers are in order by magnitude, although we do not
- * use this property.
+ * usual order by magnitude. (It is also the case that
+ * the numbers are in order by magnitude.)
  *
  * The sequence is as follows, with examples in base 10:
  * - Start with 0.
@@ -32,13 +28,39 @@
  *
  * I believe this is related to
  * [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
+ *
+ * @param base Must be even and > 2. (For a binary sequence with the above
+ * properties, binary encode the base 4 sequence.)
  */
 export function lexSequence(base: number) {
   if (!Number.isSafeInteger(base) || base % 2 !== 0 || base <= 2) {
-    throw new Error(`base must be an even integer > 2: ${base}`);
+    throw new Error(`lex-sequence base must be an even integer > 2: ${base}`);
   }
 
   const logBase = Math.log(base);
+
+  /**
+   * Returns the length in BASE digits.
+   */
+  function len(seq: number): number {
+    return seq === 0 ? 1 : Math.floor(Math.log(seq) / logBase) + 1;
+  }
+
+  /**
+   * Returns the first number in the sequence that has the given number of digits.
+   */
+  function first(d: number): number {
+    // You can calculate that the first d-digit number is BASE^d - BASE * (BASE/2)^(d-1).
+    return Math.pow(base, d) - base * Math.pow(base / 2, d - 1);
+  }
+
+  /**
+   * Returns the last number in the sequence that has the given number of digits.
+   */
+  function last(d: number): number {
+    // You can calculate that the last d-digit number is BASE^d - (BASE/2)^d - 1.
+    return Math.pow(base, d) - Math.pow(base / 2, d) - 1;
+  }
 
   /**
    * Given a number in the sequence, outputs the next number in the sequence.
@@ -46,9 +68,7 @@ export function lexSequence(base: number) {
    * To yield the sequence in order, call this function repeatedly starting at 0.
    */
   function successor(seq: number): number {
-    const d = seq === 0 ? 1 : Math.floor(Math.log(seq) / logBase) + 1;
-    // You can calculate that the last d-digit number is BASE^d - (BASE/2)^d - 1.
-    if (seq === Math.pow(base, d) - Math.pow(base / 2, d) - 1) {
+    if (seq === last(len(seq))) {
       // New length: seq -> (seq + 1) * BASE.
       return (seq + 1) * base;
     } else {
@@ -58,12 +78,10 @@ export function lexSequence(base: number) {
   }
 
   /**
-   * Calls successor twice, advancing the sequence by two places.
+   * Calls successor twice, advancing the sequence by two.
    */
   function successor2(seq: number): number {
-    const d = seq === 0 ? 1 : Math.floor(Math.log(seq) / logBase) + 1;
-    // You can calculate that the last d-digit number is BASE^d - (BASE/2)^d - 1.
-    const dLast = Math.pow(base, d) - Math.pow(base / 2, d) - 1;
+    const dLast = last(len(seq));
     if (seq === dLast) {
       // First step is a new length: seq -> (seq + 1) * BASE.
       // Second step is seq -> seq + 1.
@@ -93,9 +111,8 @@ export function lexSequence(base: number) {
     }
     // The number is d-digits long, and at index `remaining` within
     // the d-digit subsequence.
-    // So add `remaining` to the first d-digit number, which you can calculate is
-    // BASE^d - BASE * (BASE/2)^(d-1).
-    return remaining + Math.pow(base, d) - base * Math.pow(base / 2, d - 1);
+    // So add `remaining` to the first d-digit number.
+    return remaining + first(d);
   }
 
   /**
@@ -108,10 +125,10 @@ export function lexSequence(base: number) {
   function sequenceInvSafe(seq: number): number {
     if (!Number.isSafeInteger(seq) || seq < 0) return -1;
 
-    const d = seq === 0 ? 1 : Math.floor(Math.log(seq) / logBase) + 1;
-    // First d-digit number is BASE^d - BASE * (BASE/2)^(d-1); check how far
-    // we are from there (= index in d-digit sub-sequence)
-    let ans = seq - (Math.pow(base, d) - base * Math.pow(base / 2, d - 1));
+    const d = len(seq);
+    // Check how far we are from the first d-digit number,
+    // i.e., our index in the d-digit sub-sequence.
+    let ans = seq - first(d);
     if (ans < 0 || ans >= Math.pow(base / 2, d)) {
       // Valid indexes within the d-digit sub-sequence are [0, (BASE/2)^d).
       // We are outside of that range, therefore seq is invalid.
@@ -133,7 +150,7 @@ export function lexSequence(base: number) {
   function sequenceInv(seq: number): number {
     const ans = sequenceInvSafe(seq);
     if (ans === -1) {
-      throw new Error(`Not a member of the sequence: ${seq}`);
+      throw new Error(`Not a lex-sequence member: ${seq}`);
     }
     return ans;
   }
