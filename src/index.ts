@@ -78,25 +78,6 @@ export function lexSequence(base: number) {
   }
 
   /**
-   * Calls successor twice, advancing the sequence by two.
-   */
-  function successor2(seq: number): number {
-    const dLast = last(len(seq));
-    if (seq === dLast) {
-      // First step is a new length: seq -> (seq + 1) * BASE.
-      // Second step is seq -> seq + 1.
-      return (seq + 1) * base + 1;
-    } else if (seq === dLast - 1) {
-      // First step is seq -> seq + 1.
-      // Second step is a new length: seq -> (seq + 1) * BASE.
-      return (seq + 2) * base;
-    } else {
-      // seq -> seq + 1 twice.
-      return seq + 2;
-    }
-  }
-
-  /**
    * Returns the n-th number in the sequence.
    */
   function sequence(index: number): number {
@@ -155,5 +136,5 @@ export function lexSequence(base: number) {
     return ans;
   }
 
-  return { successor, successor2, sequence, sequenceInv, sequenceInvSafe };
+  return { successor, sequence, sequenceInv, sequenceInvSafe };
 }
