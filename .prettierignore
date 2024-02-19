@@ -1,5 +1,4 @@
 /build/*
-/docs/*
 /.nyc_output/*
 /coverage/*
 LICENSE

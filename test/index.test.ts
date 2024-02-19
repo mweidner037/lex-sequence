@@ -5,7 +5,7 @@ import { lexSequence } from "../src";
 describe("lex-sequence", () => {
   for (const BASE of [4, 10, 16, 26, 36, 52, 64, 128]) {
     test("invalid base", () => {
-      for (const invalidBase of [2, 3, 25, -1, 0.5, NaN]) {
+      for (const invalidBase of [0, 1, 2, 3, 25, -1, 0.5, NaN]) {
         assert.throws(() => lexSequence(invalidBase));
       }
     });

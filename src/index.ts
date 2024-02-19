@@ -10,6 +10,21 @@ export function lexSequence(base: number) {
 
   const logBase = Math.log(base);
 
+  /*
+    The sequence is as follows, with examples in base 10:
+
+    1. Starting with 0, enumerate `BASE/2` numbers. (0, 1, ..., 4.)
+    2. Add 1, multiply by `BASE`, then enumerate `(BASE/2)^2` numbers.
+      (50, 51, ..., 74.)
+    3. Add 1, multiply by `BASE`, then enumerate `(BASE/2)^3` numbers.
+      (750, 751, ..., 874.)
+    4. Repeat this pattern indefinitely, enumerating
+      `(BASE/2)^d` length-d numbers for each d >= 1. Imagining a decimal place
+      in front of each number, each d consumes 2^(-d) of the unit interval,
+      so we never "reach 1" (overflow to d+1 digits when
+      we meant to use d digits).
+  */
+
   /**
    * Returns the length in BASE digits.
    */

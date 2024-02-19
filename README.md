@@ -16,7 +16,7 @@ For example, the base-10 sequence is
 "0", "1", "2", "3", "4", "50", "51", "52", ..., "73", "74", "750", "751", ...
 ```
 
-There are 5 length-1 strings, 5^2 length-2 strings, 5^3 length-3 strings, etc. So the n-th string is only as long as the base-5 encoding of n. (For shorter strings, you can use a base larger than 10.)
+There are 5 length-1 strings, 5^2 length-2 strings, 5^3 length-3 strings, etc. So the n-th string is only as long as the base-5 encoding of n. (For more short strings, you can use a base larger than 10.)
 
 Additional properties:
 
@@ -33,14 +33,10 @@ Additional properties:
 
    - That limits you to a fixed number of strings, instead of an indefinite number. Also, the first few strings (which you'll probably use most often) are more than one char long.
 
-3. How about [lexicographic-integer](https://www.npmjs.com/package/lexicographic-integer)?
-
-   - That package implements the same idea, but only in base 16 or 256, with strings that are generally a bit longer than ours.
-
-4. What might I use this library for?
+3. What might I use this library for?
    - Naming file versions so that they show up in order.
-   - Encoding a timestamp-plus-tiebreaker as a lexicographically-ordered string `` `${timestamp}-${tiebreaker}` ``, so that you can sort by this one field instead of two. (E.g., [Lamport timestamps](https://en.wikipedia.org/wiki/Lamport_timestamp) with a process ID tiebreaker.)
-   - I use it in [position-strings](https://github.com/mweidner037/position-strings/#readme), to assign slowly-increasing strings to sequential positions.
+   - Encoding a timestamp-plus-tiebreaker as a lexicographically-ordered string `` `${timestamp}-${tiebreaker}` ``, so that you can sort by this single field. (E.g., [Lamport timestamps](https://en.wikipedia.org/wiki/Lamport_timestamp) with a process ID tiebreaker.)
+   - I use it in [position-strings](https://github.com/mweidner037/position-strings/#readme), to assign slowly-growing strings to sequential positions.
 
 ## API
 
@@ -88,10 +84,11 @@ for (let i = 0; i < 100; i++) {
 ## Misc
 
 - `BASE` must even and >= 4. For a base-2 (binary) sequence, binary-encode the numbers from the base-4 sequence.
-- You can use any alphabet to encode numbers as strings, so long as it consists of `BASE` chars and they are in lexicographic order. E.g., you can use base64 chars in the **non-standard, lexicographic** ordering `+/0-9A-Za-z`.
 - The `BASE` encoding of `sequence(n)` is always as long as the `BASE/2` encoding of `n`.
+- You can use any alphabet to encode numbers as strings, so long as it consists of `BASE` chars and they are in lexicographic order. E.g., you can use base64 chars in the **non-standard, lexicographic** ordering `+/0-9A-Za-z`.
+- [lexicographic-integer](https://www.npmjs.com/package/lexicographic-integer) implements the same idea, but only in base 16 or 256, with strings that are generally a bit longer than ours.
 - The sequence is as follows, with examples in base 10:
-  1. Starting with 0, enumerate `(BASE/2)^1` numbers. (0, 1, ..., 4.)
+  1. Starting with 0, enumerate `BASE/2` numbers. (0, 1, ..., 4.)
   2. Add 1, multiply by `BASE`, then enumerate `(BASE/2)^2` numbers.
      (50, 51, ..., 74.)
   3. Add 1, multiply by `BASE`, then enumerate `(BASE/2)^3` numbers.
@@ -101,4 +98,4 @@ for (let i = 0; i < 100; i++) {
      in front of each number, each d consumes 2^(-d) of the unit interval,
      so we never "reach 1" (overflow to d+1 digits when
      we meant to use d digits).
-- I have not found an existing source describing the sequence, but I believe it is related to [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
+- I have not found an existing source describing this sequence, but I believe it is related to [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
