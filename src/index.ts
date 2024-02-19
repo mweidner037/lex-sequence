@@ -1,36 +1,7 @@
 /**
- * These functions deal with a special sequence that has
- * the following properties:
- * 1. Each number is a nonnegative integer (however, not all
- * nonnegative integers are enumerated).
- * 2. The numbers' BASE representations are enumerated in
- * lexicographic order, with no prefixes (i.e., no string
- * representation is a prefix of another).
- * 3. The n-th enumerated number has O(log(n)) BASE digits.
+ * Returns sequence functions for the given base.
  *
- * Properties (2) and (3) are analogous to normal counting, except
- * that we order by the lexicographic order instead of the
- * usual order by magnitude. (It is also the case that
- * the numbers are in order by magnitude.)
- *
- * The sequence is as follows, with examples in base 10:
- * - Start with 0.
- * - Enumerate (BASE/2)^1 numbers (0, 1, ..., 4).
- * - Add 1, multiply by BASE, then enumerate (BASE/2)^2 numbers
- * (50, 51, ..., 74).
- * - Add 1, multiply by BASE, then enumerate (BASE/2)^3 numbers
- * (750, 751, ..., 874).
- * - Repeat this pattern indefinitely, enumerating
- * (BASE/2)^d d-digit numbers for each d >= 1. Imagining a decimal place
- * in front of each number, each d consumes 2^(-d) of the unit interval,
- * so we never "reach 1" (overflow to d+1 digits when
- * we meant to use d digits).
- *
- * I believe this is related to
- * [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
- *
- * @param base Must be even and >= 4. (For a binary sequence with the above
- * properties, binary encode the base 4 sequence.)
+ * @param base Must be even and >= 4. (For a base-2 sequence, binary encode the base-4 sequence.)
  */
 export function lexSequence(base: number) {
   if (!Number.isSafeInteger(base) || base % 2 !== 0 || base < 4) {
@@ -136,5 +107,5 @@ export function lexSequence(base: number) {
     return ans;
   }
 
-  return { successor, sequence, sequenceInv, sequenceInvSafe };
+  return { sequence, sequenceInv, sequenceInvSafe, successor };
 }
