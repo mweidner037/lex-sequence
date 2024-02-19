@@ -56,16 +56,16 @@ const { sequence, sequenceInv, sequenceInvSafe, successor } = lexSequence(BASE);
 `sequence(n)` returns the n-th entry in the sequence **as an integer**, which you can then `BASE` encode:
 
 ```ts
-for (let n = 0; n < 1000; n++) {
+for (let n = 0; n < 100; n++) {
   console.log(sequence(n).toString(BASE));
 }
-// Prints "0", "1", ..., "TODO"
+// Prints "0", "1", ..., "4", "50", ..., "74", "750", ..., "819"
 ```
 
 `sequenceInv(seq)` converts a sequence member back to its index:
 
 ```ts
-console.log(sequenceInv(TODO)); // Prints 999
+console.log(sequenceInv(819)); // Prints 99
 ```
 
 "Safe" version that will return -1 instead of throwing an error, if `seq` is not a valid sequence member:
@@ -78,11 +78,11 @@ console.log(sequenceInvSafe(5) === -1); // Prints true
 
 ```ts
 let seq = 0;
-for (let i = 0; i < 1000; i++) {
+for (let i = 0; i < 100; i++) {
   console.log(seq.toString(BASE));
   seq = successor(seq);
 }
-// Prints "0", "1", ..., "TODO"
+// Prints "0", "1", ..., "4", "50", ..., "74", "750", ..., "819"
 ```
 
 ## Misc
@@ -101,4 +101,4 @@ for (let i = 0; i < 1000; i++) {
      in front of each number, each d consumes 2^(-d) of the unit interval,
      so we never "reach 1" (overflow to d+1 digits when
      we meant to use d digits).
-- I have not found an existing source for the sequence, but I believe it is related to [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
+- I have not found an existing source describing the sequence, but I believe it is related to [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
