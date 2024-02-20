@@ -35,7 +35,7 @@ Additional properties:
 
 3. What might I use this library for?
    - Naming file versions so that they show up in order.
-   - Encoding a timestamp-plus-tiebreaker as a lexicographically-ordered string `` `${timestamp}-${tiebreaker}` ``, so that you can sort by this single field. (E.g., [Lamport timestamps](https://en.wikipedia.org/wiki/Lamport_timestamp) with a process ID tiebreaker.)
+   - Encoding a timestamp-plus-tiebreaker as a lexicographically-ordered string `` `${sequence(timestamp)}-${tiebreaker}` ``, so that you can sort by this single field. (E.g., [Lamport timestamps](https://en.wikipedia.org/wiki/Lamport_timestamp) with a process ID tiebreaker.)
    - I use it in [position-strings](https://github.com/mweidner037/position-strings/#readme), to assign slowly-growing strings to sequential positions.
 
 ## API
