@@ -1,26 +1,26 @@
 import { assert } from "chai";
 import { describe, test } from "mocha";
-import { lexSequence } from "../src";
+import { sequence, sequenceInv, sequenceInvSafe, successor } from "../src";
 
 describe("lex-sequence", () => {
+  test("invalid base", () => {
+    for (const invalidBase of [0, 1, 2, 3, 25, -1, 0.5, NaN]) {
+      assert.throws(() => sequence(0, invalidBase));
+      assert.throws(() => sequenceInv(0, invalidBase));
+      assert.throws(() => sequenceInvSafe(0, invalidBase));
+      assert.throws(() => successor(0, invalidBase));
+    }
+  });
+
   for (const BASE of [4, 10, 16, 26, 36, 52, 64, 128]) {
-    test("invalid base", () => {
-      for (const invalidBase of [0, 1, 2, 3, 25, -1, 0.5, NaN]) {
-        assert.throws(() => lexSequence(invalidBase));
-      }
-    });
-
     describe(`base ${BASE}`, () => {
-      const { sequence, sequenceInv, sequenceInvSafe, successor } =
-        lexSequence(BASE);
-
       // The first 10k numbers in the sequence, generated with successor().
       const first10k: number[] = [];
 
       before(() => {
         first10k.push(0);
         for (let i = 1; i < 10000; i++) {
-          first10k.push(successor(first10k.at(-1)!));
+          first10k.push(successor(first10k.at(-1)!, BASE));
         }
       });
 
@@ -45,25 +45,25 @@ describe("lex-sequence", () => {
 
       test("sequence", () => {
         for (let i = 0; i < first10k.length; i++) {
-          assert.strictEqual(sequence(i), first10k[i]);
+          assert.strictEqual(sequence(i, BASE), first10k[i]);
         }
       });
 
       test("sequenceInv", () => {
         for (let i = 0; i < first10k.length; i++) {
-          assert.strictEqual(sequenceInv(first10k[i]), i);
+          assert.strictEqual(sequenceInv(first10k[i], BASE), i);
         }
         for (const invalidSeq of [-1, 0.5, NaN, BASE / 2, BASE / 2 + 1]) {
-          assert.throws(() => sequenceInv(invalidSeq));
+          assert.throws(() => sequenceInv(invalidSeq, BASE));
         }
       });
 
       test("sequenceInvSafe", () => {
         for (let i = 0; i < first10k.length; i++) {
-          assert.strictEqual(sequenceInvSafe(first10k[i]), i);
+          assert.strictEqual(sequenceInvSafe(first10k[i], BASE), i);
         }
         for (const invalidSeq of [-1, 0.5, NaN, BASE / 2, BASE / 2 + 1]) {
-          assert.strictEqual(sequenceInvSafe(invalidSeq), -1);
+          assert.strictEqual(sequenceInvSafe(invalidSeq, BASE), -1);
         }
       });
     });
