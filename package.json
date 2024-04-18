@@ -1,6 +1,6 @@
 {
   "name": "lex-sequence",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "A sequence of strings that are lexicographically ordered and grow slowly",
   "author": "Matthew Weidner",
   "license": "MIT",
