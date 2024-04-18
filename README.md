@@ -35,8 +35,8 @@ Additional properties:
 
 3. What might I use this library for?
    - Naming file versions so that they show up in order.
-   - Encoding a timestamp-plus-tiebreaker as a lexicographically-ordered string `` `${sequence(timestamp)}-${tiebreaker}` ``, so that you can sort by this single field. (E.g., [Lamport timestamps](https://en.wikipedia.org/wiki/Lamport_timestamp) with a process ID tiebreaker.)
-   - I use it in [list-positions](https://github.com/mweidner037/position-strings/#readme)'s [lexicographicString function](https://github.com/mweidner037/list-positions/blob/master/README.md#lexicographic-strings), to assign slowly-growing strings to sequential positions.
+   - Encoding a timestamp-plus-tiebreaker as a lexicographically-ordered string `` `${sequence(timestamp, BASE)}-${tiebreaker}` ``, so that you can sort by this single field. (E.g., [Lamport timestamps](https://en.wikipedia.org/wiki/Lamport_timestamp) with a process ID tiebreaker.)
+   - I use it in [list-positions](https://github.com/mweidner037/list-positions/#readme)'s [lexicographicString function](https://github.com/mweidner037/list-positions#lexicographic-strings), to assign slowly-growing strings to sequential positions.
 
 ## API
 
@@ -53,7 +53,7 @@ import {
 const BASE = 10;
 ```
 
-`sequence(n, base)` returns the n-th entry in the sequence **as an integer**, which you can then `BASE` encode:
+`sequence(n, BASE)` returns the n-th entry in the sequence **as an integer**, which you can then `BASE` encode:
 
 ```ts
 for (let n = 0; n < 100; n++) {
@@ -62,7 +62,7 @@ for (let n = 0; n < 100; n++) {
 // Prints "0", "1", ..., "4", "50", ..., "74", "750", ..., "819"
 ```
 
-`sequenceInv(seq, base)` converts a sequence member back to its index:
+`sequenceInv(seq, BASE)` converts a sequence member back to its index:
 
 ```ts
 console.log(sequenceInv(819, BASE)); // Prints 99
@@ -74,7 +74,7 @@ console.log(sequenceInv(819, BASE)); // Prints 99
 console.log(sequenceInvSafe(5, BASE) === -1); // Prints true
 ```
 
-`successor(seq, base)` is a fast way to go from `sequence(n, base)` to `sequence(n + 1, base)`:
+`successor(seq, BASE)` is a fast way to go from `sequence(n, BASE)` to `sequence(n + 1, BASE)`:
 
 ```ts
 let seq = 0;
@@ -102,4 +102,4 @@ for (let i = 0; i < 100; i++) {
      in front of each number, each d consumes 2^(-d) of the unit interval,
      so we never "reach 1" (overflow to d+1 digits when
      we meant to use d digits).
-- I have not found an existing source describing this sequence, but I believe it is related to [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
+- I have not found an existing source describing this sequence, but the binary-encoded base-4 sequence is similar to [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).

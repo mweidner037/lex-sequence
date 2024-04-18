@@ -84,16 +84,16 @@ export function sequence(index: number, base: number): number {
 }
 
 /**
- * Inverse of {@link sequence}: returns the index of seq in the sequence.
+ * Inverse of {@link sequence}: returns the index of `seq` in the sequence.
  *
- * If seq is not a member of the sequence, returns -1, unlike {@link sequenceInv}
+ * If `seq` is not a member of the sequence, returns -1, unlike {@link sequenceInv}
  * which throws an error. So you can use this function to test if
- * seq is a member of the sequence.
+ * `seq` is a member of the sequence.
  */
 export function sequenceInvSafe(seq: number, base: number): number {
   checkBase(base);
 
-  if (!Number.isSafeInteger(seq) || seq < 0) return -1;
+  if (!(Number.isSafeInteger(seq) && seq >= 0)) return -1;
 
   const d = len(seq, base);
   // Check how far we are from the first d-digit number,
@@ -112,9 +112,9 @@ export function sequenceInvSafe(seq: number, base: number): number {
 }
 
 /**
- * Inverse of {@link sequence}: returns the index of seq in the sequence.
+ * Inverse of {@link sequence}: returns the index of `seq` in the sequence.
  *
- * @throws If seq is not a member of the sequence. (To test membership
+ * @throws If `seq` is not a member of the sequence. (To test membership
  * without a try-catch, call {@link sequenceInvSafe} and check for output -1.)
  */
 export function sequenceInv(seq: number, base: number): number {
