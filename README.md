@@ -35,48 +35,52 @@ Additional properties:
 
 3. What might I use this library for?
    - Naming file versions so that they show up in order.
-   - Encoding a timestamp-plus-tiebreaker as a lexicographically-ordered string `` `${sequence(timestamp)}-${tiebreaker}` ``, so that you can sort by this single field. (E.g., [Lamport timestamps](https://en.wikipedia.org/wiki/Lamport_timestamp) with a process ID tiebreaker.)
-   - I use it in [position-strings](https://github.com/mweidner037/position-strings/#readme), to assign slowly-growing strings to sequential positions.
+   - Encoding a timestamp-plus-tiebreaker as a lexicographically-ordered string `` `${sequence(timestamp, BASE)}-${tiebreaker}` ``, so that you can sort by this single field. (E.g., [Lamport timestamps](https://en.wikipedia.org/wiki/Lamport_timestamp) with a process ID tiebreaker.)
+   - I use it in [list-positions](https://github.com/mweidner037/list-positions/#readme)'s [lexicographicString function](https://github.com/mweidner037/list-positions#lexicographic-strings), to assign slowly-growing strings to sequential positions.
 
 ## API
 
-Specify your base to get the functions:
+It's a good idea to specify your base as a constant:
 
 ```ts
-import { lexSequence } from "lex-sequence";
+import {
+  sequence,
+  sequenceInv,
+  sequenceInvSafe,
+  successor,
+} from "lex-sequence";
 
 const BASE = 10;
-const { sequence, sequenceInv, sequenceInvSafe, successor } = lexSequence(BASE);
 ```
 
-`sequence(n)` returns the n-th entry in the sequence **as an integer**, which you can then `BASE` encode:
+`sequence(n, BASE)` returns the n-th entry in the sequence **as an integer**, which you can then `BASE` encode:
 
 ```ts
 for (let n = 0; n < 100; n++) {
-  console.log(sequence(n).toString(BASE));
+  console.log(sequence(n, BASE).toString(BASE));
 }
 // Prints "0", "1", ..., "4", "50", ..., "74", "750", ..., "819"
 ```
 
-`sequenceInv(seq)` converts a sequence member back to its index:
+`sequenceInv(seq, BASE)` converts a sequence member back to its index:
 
 ```ts
-console.log(sequenceInv(819)); // Prints 99
+console.log(sequenceInv(819, BASE)); // Prints 99
 ```
 
 "Safe" version that will return -1 instead of throwing an error, if `seq` is not a valid sequence member:
 
 ```ts
-console.log(sequenceInvSafe(5) === -1); // Prints true
+console.log(sequenceInvSafe(5, BASE) === -1); // Prints true
 ```
 
-`successor(seq)` is a fast way to go from `sequence(n)` to `sequence(n+1)`:
+`successor(seq, BASE)` is a fast way to go from `sequence(n, BASE)` to `sequence(n + 1, BASE)`:
 
 ```ts
 let seq = 0;
 for (let i = 0; i < 100; i++) {
   console.log(seq.toString(BASE));
-  seq = successor(seq);
+  seq = successor(seq, BASE);
 }
 // Prints "0", "1", ..., "4", "50", ..., "74", "750", ..., "819"
 ```
@@ -84,7 +88,7 @@ for (let i = 0; i < 100; i++) {
 ## Misc
 
 - `BASE` must even and >= 4. For a base-2 (binary) sequence, binary-encode the numbers from the base-4 sequence.
-- The `BASE` encoding of `sequence(n)` is always as long as the `BASE/2` encoding of `n`.
+- The `BASE` encoding of `sequence(n, BASE)` is always as long as the `BASE/2` encoding of `n`.
 - You can use any alphabet to encode numbers as strings, so long as it consists of `BASE` chars and they are in lexicographic order. E.g., you can use base64 chars in the **non-standard, lexicographic** ordering `+/0-9A-Za-z`.
 - [lexicographic-integer](https://www.npmjs.com/package/lexicographic-integer) implements the same idea, but only in base 16 or 256, with strings that are generally a bit longer than ours.
 - The sequence is as follows, with examples in base 10:
@@ -98,4 +102,4 @@ for (let i = 0; i < 100; i++) {
      in front of each number, each d consumes 2^(-d) of the unit interval,
      so we never "reach 1" (overflow to d+1 digits when
      we meant to use d digits).
-- I have not found an existing source describing this sequence, but I believe it is related to [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
+- I have not found an existing source describing this sequence, but the binary-encoded base-4 sequence is similar to [Elias gamma coding](https://en.wikipedia.org/wiki/Elias_gamma_coding).
